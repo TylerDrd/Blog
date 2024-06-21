@@ -1,27 +1,52 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 
 export const Register = () => {
+
+  const [username, setusername] = useState("");
+  const [password, setpassword] = useState("");
+  const [email, setemail] = useState("");
+  const [confirmpassword, setconfirmpassword] = useState("");
+
+  const registerpage = async(event) => {
+    event.preventDefault();
+    const temp = await fetch('http://localhost:5000/register',{
+      method: 'POST',
+      body: JSON.stringify({username, email, password, confirmpassword}),
+      headers: {'Content-Type': 'application/json'}
+    })
+    console.log(temp);
+  }
+
   return (
-    <form className="mx-auto max-w-lg">
+    <form onSubmit={registerpage} className="mx-auto max-w-lg">
       <h1 className="text-2xl font-bold mb-5">Register</h1>
       <input
         type="text"
         placeholder="Username"
+        value={username}
+        onChange={event => setusername(event.target.value)}
         className="block mb-5 w-full p-2 border-2 border-gray-300 rounded-md bg-white"
       />
       <input
         type="text"
         placeholder="Email"
+        value={email}
+        onChange={event => setemail(event.target.value)}
         className="block mb-5 w-full p-2 border-2 border-gray-300 rounded-md bg-white"
       />
       <input
-        type="text"
+        type="password"
         placeholder="Password"
+        value={password}
+        onChange={event => setpassword(event.target.value)}
         className="block mb-5 w-full p-2 border-2 border-gray-300 rounded-md bg-white"
       />
       <input
-        type="text"
+        type="password"
         placeholder="Confirm Password"
+        value={confirmpassword}
+        onChange={event => setconfirmpassword(event.target.value)}
         className="block mb-5 w-full p-2 border-2 border-gray-300 rounded-md bg-white"
       />
       <button
