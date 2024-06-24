@@ -12,7 +12,7 @@ export const Register = () => {
     event.preventDefault();
     const temp = await fetch('http://localhost:5000/register',{
       method: 'POST',
-      body: JSON.stringify({username, email, password, confirmpassword}),
+      body: JSON.stringify({username, email, password}),
       headers: {'Content-Type': 'application/json'}
     })
     console.log(temp);
