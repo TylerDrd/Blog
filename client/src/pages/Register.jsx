@@ -10,12 +10,18 @@ export const Register = () => {
 
   const registerpage = async(event) => {
     event.preventDefault();
-    const temp = await fetch('http://localhost:5000/register',{
+    const response = await fetch('http://localhost:5000/register',{
       method: 'POST',
       body: JSON.stringify({username, email, password}),
       headers: {'Content-Type': 'application/json'}
     })
-    console.log(temp);
+    
+    if(response.status === 200){
+      alert("Registered Successfully");
+    }
+    else{
+      alert("Registration Failed");
+    }
   }
 
   return (
