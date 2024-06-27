@@ -1,17 +1,46 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import {useState} from 'react';
 
 export const Login = () => {
+  const [username, setusername] = useState("");
+  const [password, setpassword] = useState("");
+  const [redirect, setRedirect] = useState(false);
+
+  const loginpage = async(event) => {
+    event.preventDefault();
+    const response = await fetch('http://localhost:5000/login',{
+      method: 'POST',
+      body: JSON.stringify({username, password}),
+      headers: {'Content-Type': 'application/json'},
+      credentials: 'include'
+    });
+    if(response.ok)
+      {
+        setRedirect(true);
+      }
+      else{
+        alert('Wrong Credentials');
+      }
+  }
+  if(redirect)
+    {
+      return <Navigate to="/" /> //Redirect to home page if login successful
+    }
   return (
-    <form className="mx-auto max-w-lg">
+    <form className="mx-auto max-w-lg" onSubmit={loginpage}>
       <h1 className="text-2xl font-bold mb-5">Login</h1>
       <input
         type="text"
         placeholder="Username"
+        value={username}
+        onChange={event => setusername(event.target.value)}
         className="block mb-5 w-full p-2 border-2 border-gray-300 rounded-md bg-white"
       />
       <input
         type="password"
         placeholder="Password"
+        value={password}
+        onChange={event => setpassword(event.target.value)}
         className="block mb-5 w-full p-2 border-2 border-gray-300 rounded-md bg-white"
       />
       <button
