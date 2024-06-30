@@ -3,14 +3,11 @@ import { Header } from "./components/Header";
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import { Register } from "./pages/Register";
 import { Login } from "./pages/Login";
-import {useState, createContext} from "react";
-
-export const AppContext = createContext();
-
+import { UserContextProvider } from "./UserContext";
 export default function App() {
-  const [userinfo, setuserinfo] = useState({});
+
   return (
-    <AppContext.Provider value={{userinfo, setuserinfo}}>
+    <UserContextProvider>
       <Router>
         <main className="p-2.5 max-w-[800px] mx-auto">
           <Header />
@@ -21,6 +18,7 @@ export default function App() {
           </Routes>
         </main>
       </Router>
-    </AppContext.Provider>
+    </UserContextProvider>
+
   );
 }
