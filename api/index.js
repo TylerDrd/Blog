@@ -3,9 +3,13 @@ const app = express();
 const cors = require('cors');
 const mongoose = require('mongoose');
 const User = require('./models/User');
+const Post = require('./models/Post');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const multer = require('multer');
+const upload = multer({ dest: 'Uploads/'}) //upload middleware
+const fs = require('fs');//to rename the image file saved in uploads
 
 require('dotenv').config();
 app.use(cors({credentials: true,origin:'http://localhost:5173'}));
@@ -70,6 +74,30 @@ app.get('/profile', (req,res) => {
 app.post('/logout', (req, res) => {
     res.clearCookie('token');
     res.json('ok');
+})
+
+app.post('/post', upload.single('file') ,async (req,res) => {
+
+    const {originalname,path} = req.file;
+    const parts = originalname.split('.');
+    const extension = parts[parts.length - 1]; //grabbing extension of image file
+    const newpath = path+'.'+extension;
+    fs.renameSync(path, newpath); //renaming the file to avoid overwriting
+
+    //the req. payload contains title, summary, content and file.
+    // we want to save it to database
+
+    const {title,summary,content} = req.body;
+    const postdoc = await Post.create({
+        title,
+        summary,
+        content,
+        cover:newpath
+    })
+    res.json(postdoc);
+    //postdoc contains title, summary, content, cover and timestamp
+
+   // res.json(req.file) // lot of attributes like filename, size,path, destination etc
 })
 
 app.listen(5000, () => {
