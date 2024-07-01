@@ -1,4 +1,4 @@
-import { Post } from "./components/Post";
+import { Home } from "./pages/Home";
 import { Header } from "./components/Header";
 import { Routes, Route, BrowserRouter as Router } from "react-router-dom";
 import { Register } from "./pages/Register";
@@ -13,7 +13,7 @@ export default function App() {
         <main className="p-2.5 max-w-[800px] mx-auto">
           <Header />
           <Routes>
-            <Route path="/" element={<Post />} />
+            <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/create" element={<CreatePost />} />
