@@ -37,18 +37,23 @@ export const CreatePost = () => {
     // Send post data to server
 
     // eslint-disable-next-line no-unused-vars
-    const response = await fetch('http://localhost:5000/post', {
-        method: 'POST',
-        body: data
-    })
-    if(response.ok) 
-        {
-            alert('Post created successfully!');
-            setredirect(true); // Redirect to the homepage after creating a new post
+   
+    try {
+        const response = await fetch('http://localhost:5000/post', {
+            method: 'POST',
+            body: data,
+            credentials: 'include',
+        });
 
+        if (response.ok) {
+            alert('Post created successfully!');
+            setredirect(true);
+        } else {
+            alert('Failed to create post');
         }
-    else{
-        alert('Failed to create post');
+    } catch (error) {
+        console.error('Error creating the post', error);
+        alert('Failed to create post due to network error');
     }
   };
 

@@ -15,6 +15,7 @@ require('dotenv').config();
 app.use(cors({credentials: true,origin:'http://localhost:5173'}));
 app.use(express.json());
 app.use(cookieParser());
+app.use('/Uploads', express.static(__dirname + '/Uploads'))
 
 mongoose.connect(process.env.MONGO_CONNECTION_URI)
    .then(console.log('connected to mongoDB'))
@@ -49,12 +50,15 @@ app.post('/login', async (req,res) =>
     {
         //logged in 
         jwt.sign(
-            { "username" : finduser.username},
+            { "username" : finduser.username,"id" : finduser._id },
             process.env.ACCESS_TOKEN_SECRET,
             {},
             (err, token) => {
                 if(err) throw err;
-                res.cookie('token',token).json({username});
+                res.cookie('token',token).json({
+                    username,
+                    id: finduser._id
+                });
             }
         );
     }
@@ -74,31 +78,43 @@ app.get('/profile', (req,res) => {
 app.post('/logout', (req, res) => {
     res.clearCookie('token');
     res.json('ok');
-})
+});
 
-app.post('/post', upload.single('file') ,async (req,res) => {
+app.post('/post', upload.single('file'), async (req, res) => {
+    try {
+        const { originalname, path } = req.file;
+        const parts = originalname.split('.');
+        const extension = parts[parts.length - 1];
+        const newPath = path + '.' + extension;
+        fs.renameSync(path, newPath);
 
-    const {originalname,path} = req.file;
-    const parts = originalname.split('.');
-    const extension = parts[parts.length - 1]; //grabbing extension of image file
-    const newpath = path+'.'+extension;
-    fs.renameSync(path, newpath); //renaming the file to avoid overwriting
+        const { token } = req.cookies;
+        jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {}, async (err, info) => {
+            if (err) return res.status(401).json({ error: 'Invalid token' });
+            const { title, summary, content } = req.body;
+            const postDoc = await Post.create({
+                title,
+                summary,
+                content,
+                cover: newPath,
+                author: info.id,
+            });
+            res.json(postDoc);
+        });
+    } catch (error) {
+        console.error('Error processing the post request', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
-    //the req. payload contains title, summary, content and file.
-    // we want to save it to database
-
-    const {title,summary,content} = req.body;
-    const postdoc = await Post.create({
-        title,
-        summary,
-        content,
-        cover:newpath
-    })
-    res.json(postdoc);
-    //postdoc contains title, summary, content, cover and timestamp
-
-   // res.json(req.file) // lot of attributes like filename, size,path, destination etc
-})
+app.get('/post', async (req,res) => {
+    res.json(
+      await Post.find()
+        .populate('author', ['username'])
+        .sort({createdAt: -1})
+        .limit(20)
+    );
+  });
 
 app.listen(5000, () => {
     console.log('Listening on port 5000')
