@@ -116,6 +116,12 @@ app.get('/post', async (req,res) => {
     );
   });
 
+app.get('/post/:id', async (req,res) => {
+    const {id} = req.params;
+    const postid = await Post.findById(id).populate('author', ['username']);
+    res.json(postid);
+});
+
 app.listen(5000, () => {
     console.log('Listening on port 5000')
 });
