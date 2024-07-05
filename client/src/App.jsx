@@ -6,6 +6,7 @@ import { Login } from "./pages/Login";
 import { CreatePost } from "./pages/CreatePost";
 import { UserContextProvider } from "./UserContext";
 import { PostPage } from "./pages/PostPage";
+import { EditPost } from "./pages/EditPost";
 
 export default function App() {
 
@@ -20,6 +21,7 @@ export default function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<PostPage />} />
+            <Route path="/edit/:id" element={<EditPost />} />
           </Routes>
         </main>
       </Router>

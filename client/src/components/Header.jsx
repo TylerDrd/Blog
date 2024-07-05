@@ -22,6 +22,8 @@ export const Header = () => {
       credentials: 'include',
     });
     setuserinfo(null);
+    
+    //<Navigate to={'/'} />
   };
 
   const username = userinfo?.username;
@@ -33,7 +35,7 @@ export const Header = () => {
           {username && (
             <>
               <Link to="/create">Create New Post</Link>
-              <a onClick={logout}>Logout</a>
+              <a className="cursor-pointer" onClick={logout}>Logout</a>
             </>
           )}
           {!username && (
