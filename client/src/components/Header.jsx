@@ -30,18 +30,35 @@ export const Header = () => {
 
   return (
     <header className="flex justify-between mb-12 mt-5 items-center">
-        <Link to="/" className="no-underline text-[#222] font-bold text-2xl">My Blog</Link>
+        <Link to="/home" className="no-underline text-[#222] font-bold text-2xl">My Blog</Link>
         <nav className="flex gap-4 text-lg">
           {username && (
             <>
-              <Link to="/create">Create New Post</Link>
-              <a className="cursor-pointer" onClick={logout}>Logout</a>
+              <Link 
+                to="/create"
+                className="bg-[#333] text-white py-[7px] px-[20px] inline-flex no-underline rounded-[5px] items-center gap-1">
+                Create New Post
+              </Link>
+              <a className="cursor-pointer bg-[#333] text-white py-[7px] px-[20px] inline-flex no-underline rounded-[5px] items-center gap-1" 
+                onClick={logout}>
+                Logout
+                </a>
             </>
           )}
           {!username && (
             <>
-              <Link to="/login">Login</Link>
-              <Link to="/register">Register</Link>
+              <Link 
+                to="/login"
+                className="bg-[#333] text-white py-[7px] px-[20px] inline-flex no-underline rounded-[5px] items-center gap-1"
+                >
+                  Login
+              </Link>
+              <Link 
+                 to="/register" 
+                 className="bg-[#333] text-white py-[7px] px-[20px] inline-flex no-underline rounded-[5px] items-center gap-1"
+                >
+                  Register
+              </Link>
             </>
           )}
         </nav>

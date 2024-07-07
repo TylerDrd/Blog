@@ -31,7 +31,7 @@ export const Login = () => {
   }
   if(redirect)
     {
-      return <Navigate to="/" /> //Redirect to home page if login successful
+      return <Navigate to="/home" /> //Redirect to home page if login successful
     }
   return (
     <form className="mx-auto max-w-lg" onSubmit={loginpage}>

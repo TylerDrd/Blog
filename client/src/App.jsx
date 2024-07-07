@@ -16,7 +16,8 @@ export default function App() {
         <main className="p-2.5 max-w-[800px] mx-auto">
           <Header />
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<div>home</div>} />
+            <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/create" element={<CreatePost />} />
