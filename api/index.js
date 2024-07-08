@@ -153,6 +153,22 @@ app.get('/post/:id', async (req,res) => {
     res.json(postid);
 });
 
+app.get('/posts/:username', async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        const posts = await Post.find({ author: user._id })
+            .populate('author', ['username'])
+            .sort({ createdAt: -1 });
+        res.json(posts);
+    } catch (error) {
+        console.error('Error fetching posts by username:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
 app.listen(5000, () => {
     console.log('Listening on port 5000')
 });

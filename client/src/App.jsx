@@ -7,6 +7,7 @@ import { CreatePost } from "./pages/CreatePost";
 import { UserContextProvider } from "./UserContext";
 import { PostPage } from "./pages/PostPage";
 import { EditPost } from "./pages/EditPost";
+import { UserProfile } from "./pages/UserProfile";
 
 export default function App() {
 
@@ -23,6 +24,7 @@ export default function App() {
             <Route path="/create" element={<CreatePost />} />
             <Route path="/post/:id" element={<PostPage />} />
             <Route path="/edit/:id" element={<EditPost />} />
+            <Route path="/user/:username" element={<UserProfile />} />
           </Routes>
         </main>
       </Router>

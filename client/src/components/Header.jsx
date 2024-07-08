@@ -43,6 +43,15 @@ export const Header = () => {
                 onClick={logout}>
                 Logout
                 </a>
+
+                <Link 
+                   to={`/user/${username}`} // Assuming this route pattern for user profiles
+                  className="bg-[#333] text-white py-[7px] px-[20px] inline-flex no-underline rounded-full items-center gap-1">
+                      {/* Circular profile button */}
+                   <div className="h-[40px] w-[40px] bg-[#333] text-white rounded-full flex items-center justify-center">
+                      {username.charAt(0).toUpperCase()}
+                  </div>
+               </Link>
             </>
           )}
           {!username && (
