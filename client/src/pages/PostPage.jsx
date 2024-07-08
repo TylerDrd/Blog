@@ -24,7 +24,9 @@ export const PostPage = () => {
     <div>
         <h1 className='m-2 text-2xl font-bold text-center'>{postinfo.title}</h1>
         <time className="block text-center text-[0.8rem] text-gray-600">{formatISO9075(new Date(postinfo.createdAt))}</time>
-        <div className="text-center mb-2 text-[1rem] font-bold">by @{postinfo.author.username}</div>
+        <div className="text-center mb-2 text-[1rem] font-bold">
+                by <Link to={`/user/${postinfo.author.username}`} className='text-[#333]'>{`@${postinfo.author.username}`}</Link>
+        </div>
         {userinfo.id === postinfo.author._id && (
             <div className="mb-2">
                 <Link 

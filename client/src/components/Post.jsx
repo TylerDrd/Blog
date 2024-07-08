@@ -19,7 +19,7 @@ export const Post = ({_id,title, summary, cover, content, createdAt,author}) => 
           </Link>
           </h1>
           <p className='mx-0 my-1.5 text-[#888] text-sm font-bold flex gap-2.5'>
-            <a className='text-[#333]'>{author.username}</a>
+            <Link to={`/user/${author.username}`} className='text-[#333]'>{author.username}</Link>
             <time>{formatISO9075(new Date(createdAt))}</time>
           </p>
           <p className='my-2.5 mx-0 leading-6'>{summary}</p>
