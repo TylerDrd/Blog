@@ -15,7 +15,7 @@ export const UserProfile = () => {
 
     return (
         <div>
-            <h1>Posts by {username}</h1>
+            <h1 className='mb-4 font-bold underline-offset-2'>Posts by {username}</h1>
             {posts.map(post => (
                 <Post key={post._id} {...post} />
             ))}
