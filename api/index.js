@@ -45,6 +45,9 @@ app.post('/login', async (req,res) =>
 {
     const {username, password} = req.body;
     const finduser = await User.findOne({username});
+    if(!finduser){
+        return res.status(401).send("User not found");
+    }
     const passOk = await bcrypt.compare(password, finduser.password);
     if(passOk)
     {
@@ -55,9 +58,10 @@ app.post('/login', async (req,res) =>
             {},
             (err, token) => {
                 if(err) throw err;
-                res.cookie('token',token).json({
+                res.status(200).json({
                     username,
-                    id: finduser._id
+                    id: finduser._id,
+                    token
                 });
             }
         );
