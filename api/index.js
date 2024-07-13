@@ -24,6 +24,32 @@ mongoose.connect(process.env.MONGO_CONNECTION_URI)
     }
 );
 
+
+const auth = (req,res,next)=>{
+    try{
+
+        const token = req.headers.authorization || "";
+        if(!token){
+            return res.status(401).send();
+        }
+        const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+       // console.log(decoded);
+        if(!decoded){
+            return res.status(401).send();
+        }
+        req.user = decoded;
+        next();        
+
+    }
+    catch(e){
+        console.log(e);
+        res.status(500).send();
+    }
+}
+
+
+
+
 app.post('/register', async (req, res) => {
     const {username, email, password} = req.body;
     try {
@@ -71,18 +97,17 @@ app.post('/login', async (req,res) =>
     }
 });
 
-app.get('/profile', (req,res) => {
-    const {token} = req.cookies;
-    jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {}, (err, info) => {
-        if(err) throw err;
-        res.json(info);
-    });
+app.get('/profile',auth, (req,res) => {
+    
+    const id = req.user.id;
+
+    const data = User.findById(id);
+    if(!data) alert("No such User exists")
+   // console.log(data);
+    res.status(200).json(data);
+
 });
 
-app.post('/logout', (req, res) => {
-    res.clearCookie('token');
-    res.json('ok');
-});
 
 app.post('/post', upload.single('file'), async (req, res) => {
     try {
@@ -92,7 +117,7 @@ app.post('/post', upload.single('file'), async (req, res) => {
         const newPath = path + '.' + extension;
         fs.renameSync(path, newPath);
 
-        const { token } = req.cookies;
+        const token  = req.headers.authorization;
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {}, async (err, info) => {
             if (err) return res.status(401).json({ error: 'Invalid token' });
             const { title, summary, content } = req.body;
@@ -121,8 +146,8 @@ app.put('/post', upload.single('file'), async (req,res) => {
             newPath = path + '.' + extension;
             fs.renameSync(path, newPath);
         }
-
-        const { token } = req.cookies;
+        
+        const token  = req.headers.authorization;
         jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, {}, async (err, info) => {
             if (err) return res.status(401).json({ error: 'Invalid token' });
             const { id, title, summary, content } = req.body;
@@ -172,6 +197,36 @@ app.get('/posts/:username', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
+app.get('/user/:username', async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.params.username });
+        if (!user) return res.status(404).json({ message: 'User not found' });
+        res.json(user);
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Update profile
+app.put('/update-profile', auth, async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const updatedFields = {};
+        if (email) updatedFields.email = email;
+        if (password) {
+            const hashedPassword = await bcrypt.hash(password, 10);
+            updatedFields.password = hashedPassword;
+        }
+        const user = await User.findByIdAndUpdate(req.user.id, updatedFields, { new: true });
+        res.status(200).json({ success: true, username: user.username, email: user.email });
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ success: false, error: 'Internal server error' });
+    }
+});
+
 
 app.listen(5000, () => {
     console.log('Listening on port 5000')

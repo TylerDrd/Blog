@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import Cookies from "js-cookie";
 
 const modules = {
     toolbar: [
@@ -28,7 +29,13 @@ export const EditPost = () => {
   const [redirect, setredirect] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:5000/post/'+id)
+    fetch('http://localhost:5000/post/'+id,
+      {
+        headers : {
+          "Authorization" : Cookies.get("token") || ""
+        }
+      }
+    )
     .then(response => {
         response.json().then(info => {
             settitle(info.title);
@@ -54,6 +61,9 @@ export const EditPost = () => {
         method: 'PUT',
         body: data,
         credentials: 'include',
+        headers : {
+          "Authorization" : Cookies.get("token") || ""
+        }
     });
 
     if(response.ok)

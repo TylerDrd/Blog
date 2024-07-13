@@ -5,13 +5,18 @@ import { useParams, Link } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import {formatISO9075} from "date-fns";
 import { UserContext } from "../UserContext";
+import Cookies from "js-cookie";
 
 export const PostPage = () => {
     const { id } = useParams();
     const {userinfo} = useContext(UserContext);
     const [postinfo, setpostinfo] = useState(null);
   useEffect(() => {
-    fetch( `http://localhost:5000/post/${id}`)
+    fetch( `http://localhost:5000/post/${id}`,{
+        headers : {
+            "Authorization" : Cookies.get("token") || ""
+          }
+    })
     .then(response => {
         response.json().then(info => {
             setpostinfo(info);

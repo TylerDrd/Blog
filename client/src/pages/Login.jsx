@@ -1,6 +1,7 @@
 import { Link, Navigate } from "react-router-dom";
 import { useState, useContext } from 'react';
 import { UserContext } from "../UserContext";
+import Cookies from "js-cookie"
 
 export const Login = () => {
   const [username, setUsername] = useState("");
@@ -43,8 +44,11 @@ export const Login = () => {
       credentials: 'include'
     });
 
+    
     if (response.ok) {
       response.json().then(data => {
+        console.log(data.token)
+        Cookies.set("token", data.token, {expires : 7});
         setuserinfo(data);
         setRedirect(true);
       });

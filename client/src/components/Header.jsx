@@ -1,12 +1,18 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useContext } from "react";
 import { UserContext } from "../UserContext";
+import Cookies from "js-cookie"
 
 export const Header = () => {
   const { setuserinfo, userinfo } = useContext(UserContext);
+  const navigate = useNavigate();
+  console.log(Cookies.get("token"));
   useEffect(() => {
     fetch('http://localhost:5000/profile', {
       credentials: 'include',
+      headers : {
+        "authorization" : Cookies.get("token") || ""
+      }
     })
       .then(res => res.json())
       .then(data => {
@@ -16,10 +22,8 @@ export const Header = () => {
   }, []);
 
   const logout = () => {
-    fetch('http://localhost:5000/logout', {
-      method: 'POST',
-      credentials: 'include',
-    });
+    Cookies.remove("token");
+    navigate("/");
     setuserinfo(null);
   };
 

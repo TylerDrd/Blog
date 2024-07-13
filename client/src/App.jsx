@@ -9,6 +9,7 @@ import { PostPage } from "./pages/PostPage";
 import { EditPost } from "./pages/EditPost";
 import { UserProfile } from "./pages/UserProfile";
 import { HomePage } from "./pages/HomePage";
+import { EditProfile } from "./pages/EditProfile";
 
 export default function App() {
 
@@ -31,6 +32,7 @@ export default function App() {
                     <Route path="/post/:id" element={<PostPage />} />
                     <Route path="/edit/:id" element={<EditPost />} />
                     <Route path="/user/:username" element={<UserProfile />} />
+                    <Route path="/edit-profile" element={<EditProfile />} />
                   </Routes>
                 </main>
               </>

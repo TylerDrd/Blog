@@ -2,6 +2,7 @@ import ReactQuill from "react-quill";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import "react-quill/dist/quill.snow.css";
+import Cookies from "js-cookie"
 
 const modules = {
     toolbar: [
@@ -39,10 +40,15 @@ export const CreatePost = () => {
     // eslint-disable-next-line no-unused-vars
    
     try {
+      console.log(Cookies.get("token"));
+      const token = Cookies.get("token") || "";
         const response = await fetch('http://localhost:5000/post', {
             method: 'POST',
             body: data,
             credentials: 'include',
+            headers : {
+              "authorization" : token
+            }
         });
 
         if (response.ok) {
