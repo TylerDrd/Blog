@@ -6,7 +6,11 @@ import { UserContext } from '../UserContext';
 export const EditProfile = () => {
     const { userinfo } = useContext(UserContext);
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [oldPassword, setOldPassword] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [emailError, setEmailError] = useState('');
+    const [oldPasswordError, setOldPasswordError] = useState('');
+    const [newPasswordError, setNewPasswordError] = useState('');
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -26,27 +30,51 @@ export const EditProfile = () => {
         }
     }, [userinfo]);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setEmailError('');
+        setOldPasswordError('');
+        setNewPasswordError('');
 
-        fetch('http://localhost:5000/update-profile', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': Cookies.get('token') || ''
-            },
-            body: JSON.stringify({ email, password })
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Profile updated successfully!');
-                    navigate(`/user/${userinfo.username}`);
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            setEmailError('Invalid email format');
+            return;
+        }
+
+        if (newPassword) {
+            const passwordPattern = /^(?=.*[0-9])(?=.*[!@#$%^&*])/;
+            if (newPassword.length < 6 || !passwordPattern.test(newPassword)) {
+                setNewPasswordError('Password must be at least 6 characters long, include a number and a special character');
+                return;
+            }
+        }
+
+        try {
+            const response = await fetch('http://localhost:5000/update-profile', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': Cookies.get('token') || ''
+                },
+                body: JSON.stringify({ email, oldPassword, newPassword })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                alert('Profile updated successfully!');
+                navigate(`/user/${userinfo.username}`);
+            } else {
+                if (data.error === 'Old password is incorrect') {
+                    setOldPasswordError('Old password is incorrect');
                 } else {
                     alert('Error updating profile');
                 }
-            })
-            .catch(error => console.error('Error updating profile:', error));
+            }
+        } catch (error) {
+            console.error('Error updating profile:', error);
+        }
     };
 
     return (
@@ -62,15 +90,27 @@ export const EditProfile = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         required
                     />
+                    {emailError && <p className="text-red-500">{emailError}</p>}
+                </div>
+                <div className="mb-4">
+                    <label className="block text-gray-700">Old Password</label>
+                    <input
+                        type="password"
+                        className="w-full px-3 py-2 border rounded"
+                        value={oldPassword}
+                        onChange={(e) => setOldPassword(e.target.value)}
+                    />
+                    {oldPasswordError && <p className="text-red-500">{oldPasswordError}</p>}
                 </div>
                 <div className="mb-4">
                     <label className="block text-gray-700">New Password</label>
                     <input
                         type="password"
                         className="w-full px-3 py-2 border rounded"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
                     />
+                    {newPasswordError && <p className="text-red-500">{newPasswordError}</p>}
                 </div>
                 <button
                     type="submit"

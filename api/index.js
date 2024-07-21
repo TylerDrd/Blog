@@ -211,14 +211,23 @@ app.get('/user/:username', async (req, res) => {
 
 // Update profile
 app.put('/update-profile', auth, async (req, res) => {
-    const { email, password } = req.body;
+    const { email, oldPassword, newPassword } = req.body;
     try {
         const updatedFields = {};
         if (email) updatedFields.email = email;
-        if (password) {
-            const hashedPassword = await bcrypt.hash(password, 10);
+        
+        if (newPassword) {
+            // Verify old password
+            const user = await User.findById(req.user.id);
+            const isMatch = await bcrypt.compare(oldPassword, user.password);
+            if (!isMatch) {
+                return res.status(400).json({ success: false, error: 'Old password is incorrect' });
+            }
+            // Hash new password and update
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
             updatedFields.password = hashedPassword;
         }
+
         const user = await User.findByIdAndUpdate(req.user.id, updatedFields, { new: true });
         res.status(200).json({ success: true, username: user.username, email: user.email });
     } catch (error) {
