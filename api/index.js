@@ -99,6 +99,7 @@ app.get("/profile", auth, async (req, res) => {
     const id = req.user.id;
     const data = await User.findById(id);
     console.log("data = ", data);
+    
     if (!data) res.status(401).json("No such User exists");
     else res.status(200).json(data);
   } catch (error) {
