@@ -15,7 +15,7 @@ export const UserProfile = () => {
 
   useEffect(() => {
     // Fetch posts by username
-    fetch(`http://localhost:5000/posts/${username}`, {
+    fetch(`http://localhost:5000/api/posts/user/${username}`, {
       headers: {
         Authorization: Cookies.get("token") || "",
       },
@@ -31,7 +31,7 @@ export const UserProfile = () => {
       .catch((error) => console.error("Error fetching posts:", error));
 
     // Fetch user details by username to get email
-    fetch(`http://localhost:5000/user/${username}`, {
+    fetch(`http://localhost:5000/api/users/${username}`, {
       headers: {
         Authorization: Cookies.get("token") || "",
       },

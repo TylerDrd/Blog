@@ -55,7 +55,7 @@ export const CreatePost = () => {
     try {
       console.log(Cookies.get("token"));
       const token = Cookies.get("token") || "";
-      const response = await fetch("http://localhost:5000/post", {
+      const response = await fetch("http://localhost:5000/api/posts", {
         method: "POST",
         body: data,
         credentials: "include",

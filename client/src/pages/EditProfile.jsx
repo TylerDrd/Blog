@@ -15,7 +15,7 @@ export const EditProfile = () => {
 
   useEffect(() => {
     if (userinfo.username) {
-      fetch(`http://localhost:5000/user/${userinfo.username}`, {
+      fetch(`http://localhost:5000/api/users/${userinfo.username}`, {
         headers: {
           Authorization: Cookies.get("token") || "",
         },
@@ -59,7 +59,7 @@ export const EditProfile = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/update-profile", {
+      const response = await fetch("http://localhost:5000/api/users/profile", {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

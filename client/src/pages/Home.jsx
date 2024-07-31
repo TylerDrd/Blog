@@ -7,7 +7,7 @@ export const Home = () => {
   const [posts, setposts] = useState([]);
   const navigate = useNavigate();
   useEffect(() => {
-    fetch("http://localhost:5000/post", {
+    fetch("http://localhost:5000/api/posts", {
       headers: {
         Authorization: Cookies.get("token") || "",
       },

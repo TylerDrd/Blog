@@ -8,7 +8,7 @@ export const Header = () => {
   const navigate = useNavigate();
   console.log(Cookies.get("token"));
   useEffect(() => {
-    fetch('http://localhost:5000/profile', {
+    fetch('http://localhost:5000/api/users/profile', {
       credentials: 'include',
       headers : {
         "authorization" : Cookies.get("token") || ""

@@ -43,7 +43,7 @@ export const EditPost = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/post/" + id, {
+    fetch("http://localhost:5000/api/posts/" + id, {
       headers: {
         Authorization: Cookies.get("token") || "",
       },
@@ -74,7 +74,7 @@ export const EditPost = () => {
       data.set("file", files?.[0]);
     }
 
-    const response = await fetch("http://localhost:5000/post", {
+    const response = await fetch("http://localhost:5000/api/posts", {
       method: "PUT",
       body: data,
       credentials: "include",

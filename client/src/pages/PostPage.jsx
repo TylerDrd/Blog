@@ -18,7 +18,7 @@ export const PostPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`http://localhost:5000/post/${id}`, {
+    fetch(`http://localhost:5000/api/posts/${id}`, {
       headers: {
         Authorization: Cookies.get("token") || "",
       },
